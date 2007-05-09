@@ -1,3 +1,4 @@
+bin/perlsetshebang
 Build.PL
 Changes
 examples/change_shebangs.pl
@@ -7,8 +8,17 @@ MANIFEST			This list of files
 META.yml
 README
 t/00.load.t
+t/01.shebang.t
 t/perlcritic
 t/perlcritic.t
 t/perlcriticrc
 t/pod-coverage.t
 t/pod.t
+t/test-files/binaryfile.gif
+t/test-files/no_args.pl
+t/test-files/no_shebang.pl
+t/test-files/relative.pl
+t/test-files/shellscript.sh
+t/test-files/unreachable.file
+t/test-files/with_args.pl
+t/test-files/with_space.pl

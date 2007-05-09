@@ -1,5 +1,11 @@
 Revision history for Unix-Shebang
 
-0.0.1  Wed May  9 13:37:04 2007
-       Initial release.
+0.3     Wed May  9 18:49:51 2007
+    - Added a test suite, an example and a utility command line program.
+
+0.2     Wed May  9 17:20:32 2007
+    - Accidentally forgot to remove some debugging output.
+
+0.1     Wed May  9 13:37:04 2007
+    -  Initial release.
 

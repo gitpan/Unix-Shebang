@@ -1,6 +1,6 @@
 ---
 name: Unix-Shebang
-version: 0.1
+version: 0.3
 author:
   - 'Ask Solem <asksh@cpan.org>'
 abstract: Utility module for Unix shebang lines.
@@ -9,6 +9,7 @@ resources:
   license: http://dev.perl.org/licenses/
 requires:
   File::Spec: 0
+  Getopt::Long: 0
   IO::File: 0
 build_requires:
   Test::More: 0.42
@@ -16,7 +17,7 @@ dynamic_config: 0
 provides:
   Unix::Shebang:
     file: lib/Unix/Shebang.pm
-    version: 0.1
+    version: 0.3
 generated_by: Module::Build version 0.2807
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

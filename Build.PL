@@ -17,6 +17,7 @@ my $builder = Module::Build->new(
     requires             => {
         'IO::File'              => 0,
         'File::Spec'            => 0,
+        'Getopt::Long'          => 0,
     },
     build_requires       => {
         'Test::More'            => 0.42,

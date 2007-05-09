@@ -1,23 +1,24 @@
 package Unix::Shebang;
 
-# $Id$
-# $Source$
-# $Author$
+# $Id: Shebang.pm,v 1.1.1.1 2007/05/09 17:41:40 ask Exp $
+# $Source: /opt/CVS/shebang/lib/Unix/Shebang.pm,v $
+# $Author: ask $
 # $HeadURL$
-# $Revision$
-# $Date$
+# $Revision: 1.1.1.1 $
+# $Date: 2007/05/09 17:41:40 $
 
 use warnings;
 use strict;
 use Carp;
 use Config;
 use English qw( -no_match_vars );
+use Exporter 'import';
 use IO::File;
 use File::Spec;
-use Exporter 'import';
+use Getopt::Long;
 
 use vars qw($VERSION @EXPORT);
-$VERSION = '0.1';
+$VERSION = '0.3';
 @EXPORT = qw( &set_shebangs ); ## no critic
 
 if (!caller() || caller() eq 'PAR') {
@@ -26,19 +27,37 @@ if (!caller() || caller() eq 'PAR') {
 
 sub run {
     my $self = shift;
-    my (@files) = @ARGV;
-    return 1 if not scalar @files;
+    
+    my $interpreter;
+    GetOptions(
+        'interpreter|i=s' => \$interpreter,
+    );
+
+    my @files = @ARGV;
+    if (not scalar @files) {
+        my $myself = $0;
+           $myself =~ s{^.*/}{}xms;
+        print {*STDERR} "Usage: $myself [-i /path/to/perl ] file1 file2 ... fileN\n";
+        return 1;
+    }
+
 
     if (!ref $self) {
         $self = __PACKAGE__->new();
     }
-    my $perl  = $self->_find_perl();
+    if ($interpreter) {
+        $self->set_interpreter($interpreter);
+    }
+    my $perl  = $self->_find_perl( );
     croak 'Could not find perl interpreter!' if not $perl;
 
     for my $file (@files) {
         if ($self->has_shebang($file)) {
             $self->set_shebang($file, $perl);
-            print {*STDERR} "Changed perl for file $file to $perl\n";
+            print {*STDERR} "++ Changed interpreter for file $file to $perl\n";
+        }
+        else {
+            print {*STDERR} "-- File '$file' has no interpreter or is a binary or block special file.\n";
         }
     }
 
@@ -115,6 +134,7 @@ sub has_shebang {
 sub set_shebang {
     my ($self, $file, $interpreter) = @_;
     $interpreter    ||= $self->get_interpreter();
+    $interpreter    ||= $self->_find_perl();
     my $match_pattern = $self->get_must_match();
     return if not -T $file;
 
@@ -171,9 +191,7 @@ sub set_shebang {
     close $out_fh
         or return _carp("Couldn't close file $file after writing: $OS_ERROR");
 
-    print $file_contents;
-
-    return;
+    return 1;
 }
 
 sub _find_perl {
@@ -181,7 +199,7 @@ sub _find_perl {
 
     # ## first check if user has specified his own interpreter.
     my $perl_interpreter = $self->get_interpreter;
-    return if $perl_interpreter;
+    return $perl_interpreter if $perl_interpreter;
 
     # ## then check the perl we are running under.
     $perl_interpreter = $EXECUTABLE_NAME;
@@ -211,8 +229,7 @@ Unix::Shebang - Utility module for Unix shebang lines.
 
 =head1 VERSION
 
-This document describes Unix::Shebang version 0.1
-
+This document describes Unix::Shebang version 0.3
 
 =head1 SYNOPSIS
 
@@ -430,6 +447,14 @@ Please report any bugs or feature requests to
 C<bug-unix-shebang@rt.cpan.org>, or through the web interface at
 L<http://rt.cpan.org>.
 
+=head1 COVERAGE
+
+    ---------------------------- ------ ------ ------ ------ ------ ------ ------
+    File                           stmt   bran   cond    sub    pod   time  total
+    ---------------------------- ------ ------ ------ ------ ------ ------ ------
+    blib/lib/Unix/Shebang.pm       99.1   77.8   62.5  100.0  100.0  100.0   93.4
+    Total                          99.1   77.8   62.5  100.0  100.0  100.0   93.4
+    ---------------------------- ------ ------ ------ ------ ------ ------ ------
 
 =head1 AUTHOR
 

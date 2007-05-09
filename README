@@ -1,4 +1,4 @@
-Unix-Shebang version 0.1
+Unix-Shebang version 0.3
 
 Shebang you say? This term also uncommonly and commonly called hashbang or hashpling
 is the pair of characters in the first line of a file that causes Unix-like operating systems
@@ -35,6 +35,7 @@ DEPENDENCIES
 
 IO::File
 File::Spec
+Getopt::Long;
 
 These should be standard with any modern versions of perl,
 but if you happen to be living in a cave somewhere you probably
