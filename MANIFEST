@@ -1,3 +1,4 @@
+bin/.exists
 bin/perlsetshebang
 Build.PL
 Changes

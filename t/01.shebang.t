@@ -1,15 +1,32 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-# $Id: 01.shebang.t,v 1.1.1.1 2007/05/09 17:41:40 ask Exp $
+# $Id: 01.shebang.t,v 1.2 2007/05/09 17:50:43 ask Exp $
 # $Source: /opt/CVS/shebang/t/01.shebang.t,v $
 # $Author: ask $
 # $HeadURL$
-# $Revision: 1.1.1.1 $
-# $Date: 2007/05/09 17:41:40 $
+# $Revision: 1.2 $
+# $Date: 2007/05/09 17:50:43 $
 
-use English         qw( -no_match_vars );
-use Test::More;
+BEGIN {
+    use Test::More;
+    use English    qw( -no_match_vars );
+    eval 'require File::Temp';
+    if ($EVAL_ERROR) {
+        plan( skip_all => 'This test requires File::Temp' );
+    }
+
+    eval 'require File::Copy';
+    if ($EVAL_ERROR) {
+        plan( skip_all => 'This test requires File::Copy' );
+    }
+
+    eval 'require Unix::Shebang';
+    if ($EVAL_ERROR) {
+        plan( skip_all => 'Unix::Shebang is not installed or built. run `make` first.' );
+    }
+}
+
 use File::Spec;
 use File::Temp;
 use File::Copy;

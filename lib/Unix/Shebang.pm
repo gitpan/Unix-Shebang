@@ -18,7 +18,7 @@ use File::Spec;
 use Getopt::Long;
 
 use vars qw($VERSION @EXPORT);
-$VERSION = '0.3';
+$VERSION = '0.314';
 @EXPORT = qw( &set_shebangs ); ## no critic
 
 if (!caller() || caller() eq 'PAR') {
@@ -65,8 +65,11 @@ sub run {
 }
 
 sub set_shebangs {
-    my ($interpreter) = @_;
-    my $s = __PACKAGE__->new({interpreter => $interpreter,});
+    my ($opt_interpreter, $opt_match) = @_;
+    my $s = __PACKAGE__->new({
+        interpreter => $opt_interpreter,
+        must_match  => $opt_match,
+    });
     return $s->run(@_);
 }
 
@@ -241,6 +244,10 @@ Or like this:
 
     perl Shebang.pm file1.pl file2.pl fileN.pl
 
+With custom interpreter path:
+
+    perl -MUnix::Shebang -e'set_shebangs("/opt/bin/bash", "bash")' file1.pl file2.pl ... fileN.pl
+
 Or you can use the object-oriented interface:
 
     use Unix::Shebang ( );
@@ -279,19 +286,33 @@ Or you can use the object-oriented interface:
 
 =head1 DESCRIPTION
 
-Shebang you say? This term also uncommonly and commonly called hashbang or hashpling
-is the pair of characters in the first line of a file that causes Unix-like operating systems
-to execute the file using the interpreter specified by the rest of the line.
-A shebang consists of the two characters, C<#> and C<!> followed by the full path of the interpreter
-program and it's arguments. This is a great feature for us interpreter-loving creatures, but it certainly
-has its limitations, especially when it comes to script distribution.
 
-One common problem when juggling different perl installations
-on the same system, or even when using a different perl location than the more common C</usr/bin/perl>
-is the tedious job of changing the interpreter path in the first line of the script.
+B<Shebang> you say?
+Also commonly and well, uncommonly referred to as C<hashbang> or C<hashpling>.
+
+
+B<Huh?>
+
+    #!/usr/bin/perl
+
+B<A> C<shebang> is the pair of characters in the first line of a script file
+that causes Unix-like operating systems to execute the file using
+the interpreter specified by the rest of the line.
+
+A shebang consists of the two characters, C<#> and C<!> followed
+by the full path of the C<interpreter> program and it's C<arguments>.
+    
+This is a great feature for us interpreter-loving creatures as it makes
+our scripts behave as compiled programs, but it has its limitations.
+
+One common problem when juggling different perl installations on the same system,
+or even when using a different perl location than the more common C</usr/bin/perl>
+is the tedious job of changing shebangs.
 
 This module can be used by module authors and end users alike to set the interpreter
 to the running perl (or a custom perl interpreter) upon installation of a distribution.
+
+C<In short, this module is an example of the art of laziness :-)>
 
 =head1 SUBROUTINES/METHODS
 
@@ -305,6 +326,7 @@ Create a new Unix::Shebang object.
 Valid options are:
     
     interpreter -  The new interpreter to be used.
+    must_match  -  Previous shebang must match this string for us to change it.
 
 If the interpreter is not set, the currently running perl
 will be used when changing files.
@@ -369,14 +391,24 @@ Will return the custom interpreter if it is set.
 
 This is the function that is run if this module is run as a script.
 
-=item C<set_shebangs>
+=item C<set_shebangs($opt_interpreter, $opt_must_match>
 
 This is a function that is exported by default so we can use this module
 on the command line. It is just a shortcut to run.
 
-Example usage:
+EXAMPLE USAGE
+
+Change to the path of the running perl:
 
     $ perl -MUnix::Shebang -e'set_shebangs' file1 file2 ... fileN
+
+Change to another perl:
+
+    $ perl -MUnix::Shebang -e'set_shebangs("/opt/bin/perl") file1 file2 ... fileN
+
+Change bourne scripts interpreter to /usr/local/sh: (previous file's shebang has to match '/sh')
+
+    $ perl -MUnix::Shebang -e'set_shebangs("/usr/local/sh", "/sh")' file1 file2 ... fileN
 
 =back
 
@@ -434,8 +466,8 @@ Unix::Shebang requires no configuration files or environment variables.
 
 =head1 INCOMPATIBILITIES
 
-This module has little purpose on non Unix-like operating systems,
-but we do not take any action when running under i.e Win32 for example.
+This module has little purpose on non Unix operating systems,
+but we do not take any action when running under i.e Win32.
 This is because someone might still have a perfectly good reason for changing
 shebangs. :-)
 
@@ -455,6 +487,24 @@ L<http://rt.cpan.org>.
     blib/lib/Unix/Shebang.pm       99.1   77.8   62.5  100.0  100.0  100.0   93.4
     Total                          99.1   77.8   62.5  100.0  100.0  100.0   93.4
     ---------------------------- ------ ------ ------ ------ ------ ------ ------
+
+
+=head1 SEE ALSO
+
+=over 4
+
+=item L<perlsetshebang>
+
+The script version of this module. It's just a small wrapper that looks like this:
+
+    #!/usr/bin/perl
+    use strict;
+    use warnings;
+    use Unix::Shebang;
+
+    Unix::Shebang->run;
+
+=back
 
 =head1 AUTHOR
 
