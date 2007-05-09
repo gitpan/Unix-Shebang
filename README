@@ -1,0 +1,48 @@
+Unix-Shebang version 0.1
+
+Shebang you say? This term also uncommonly and commonly called hashbang or hashpling
+is the pair of characters in the first line of a file that causes Unix-like operating systems
+to execute the file using the interpreter specified by the rest of the line.
+A shebang consists of the two characters, C<#> and C<!> followed by the full path of the interpreter
+program and it's arguments. This is a great feature for us interpreter-loving creatures, but it certainly
+has its limitations, especially when it comes to script distribution.
+
+One common problem when juggling different perl installations
+on the same system, or even when using a different perl location than the more common C</usr/bin/perl>
+is the tedious job of changing the interpreter path in the first line of the script.
+
+This module can be used by module authors and end users alike to set the interpreter
+to the running perl (or a custom perl interpreter) upon installation of a distribution.
+
+INSTALLATION
+
+To install this module, run the following commands:
+
+    perl Makefile.PL
+    make
+    make test
+    make install
+
+
+Or if you prefer to use the Module::Build installation method:
+
+    perl Build.pl
+    ./Build
+    ./Build test
+    ./Build install
+
+DEPENDENCIES
+
+IO::File
+File::Spec
+
+These should be standard with any modern versions of perl,
+but if you happen to be living in a cave somewhere you probably
+could fetch them on the CPAN.
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2007, Ask Solem
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
